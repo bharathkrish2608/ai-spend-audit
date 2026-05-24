@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import SpendForm from './components/SpendForm';
 import AuditResults from './components/AuditResults'; // still imported for potential internal use
 import { runAudit } from './audit-engine/recommendations';
-import { saveAudit } from './services/supabase';
+import { saveAudit, getAudit } from './services/supabase';
 
 function Home() {
   const navigate = useNavigate();
@@ -77,6 +77,57 @@ function Audit() {
 function PublicResult() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [auditResult, setAuditResult] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    async function fetchAudit() {
+      try {
+        const data = await getAudit(id);
+        if (data) {
+          const result = {
+            recommendations: data.recommendations,
+            totalMonthlySavings: data.total_monthly_savings,
+            totalAnnualSavings: data.total_annual_savings,
+            hasSignificantSavings: data.total_monthly_savings > 500,
+          };
+          setAuditResult(result);
+        } else {
+          setNotFound(true);
+        }
+      } catch (e) {
+        console.error(e);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAudit();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">Loading...</div>
+    );
+  }
+
+  if (notFound || !auditResult) {
+    return (
+      <main className="min-h-screen bg-zinc-950 text-white">
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-zinc-400 hover:text-white text-sm mb-8 block cursor-pointer"
+          >
+            ← Back
+          </button>
+          <div className="text-center text-2xl">Audit not found.</div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -86,7 +137,7 @@ function PublicResult() {
         >
           ← Back
         </button>
-        <div className="text-center text-2xl">Public Result – Audit ID: {id}</div>
+        <AuditResults auditResult={auditResult} onBack={() => navigate(-1)} />
       </div>
     </main>
   );
