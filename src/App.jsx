@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import SpendForm from './components/SpendForm'
+import AuditResults from './components/AuditResults'
 import { runAudit } from './audit-engine/recommendations'
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
         <div className="max-w-6xl mx-auto px-6 py-10">
           <button
             onClick={() => setCurrentView('home')}
-            className="text-zinc-400 hover:text-white text-sm mb-8 block"
+            className="text-zinc-400 hover:text-white text-sm mb-8 block cursor-pointer"
           >
             ← Back
           </button>
@@ -31,17 +32,10 @@ function App() {
   if (currentView === 'results') {
     return (
       <main className="min-h-screen bg-zinc-950 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-10">
-          <button
-            onClick={() => setCurrentView('home')}
-            className="text-zinc-400 hover:text-white text-sm mb-8 block"
-          >
-            ← Back
-          </button>
-          <div className="text-white p-10">
-            Results coming soon. Total savings: ${auditResult?.totalMonthlySavings}/month
-          </div>
-        </div>
+        <AuditResults
+          auditResult={auditResult}
+          onBack={() => setCurrentView('audit')}
+        />
       </main>
     )
   }
