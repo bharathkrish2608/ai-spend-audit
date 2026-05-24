@@ -2,14 +2,29 @@ import { useState } from 'react'
 import SpendForm from './components/SpendForm'
 import AuditResults from './components/AuditResults'
 import { runAudit } from './audit-engine/recommendations'
+import { saveAudit } from './services/supabase'
 
 function App() {
   const [currentView, setCurrentView] = useState('home')
   const [auditResult, setAuditResult] = useState(null)
+  const [auditId, setAuditId] = useState(null)
 
-  function handleAuditSubmit({ tools, teamSize, useCase }) {
+  async function handleAuditSubmit({ tools, teamSize, useCase }) {
     const result = runAudit(tools, teamSize, useCase)
     setAuditResult(result)
+    try {
+      const id = await saveAudit({
+        tools_data: tools,
+        team_size: teamSize,
+        use_case: useCase,
+        recommendations: result.recommendations,
+        total_monthly_savings: result.totalMonthlySavings,
+        total_annual_savings: result.totalAnnualSavings,
+      })
+      setAuditId(id)
+    } catch (e) {
+      console.error('Failed to save audit', e)
+    }
     setCurrentView('results')
   }
 
@@ -34,6 +49,7 @@ function App() {
       <main className="min-h-screen bg-zinc-950 text-white">
         <AuditResults
           auditResult={auditResult}
+          auditId={auditId}
           onBack={() => setCurrentView('audit')}
         />
       </main>
