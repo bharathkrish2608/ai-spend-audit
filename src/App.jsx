@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import SpendForm from './components/SpendForm';
 import AuditResults from './components/AuditResults'; // still imported for potential internal use
+import LeadCapture from './components/LeadCapture';
 import { runAudit } from './audit-engine/recommendations';
 import { saveAudit, getAudit } from './services/supabase';
 import { generateSummary } from './services/anthropic';
@@ -141,6 +142,7 @@ function PublicResult() {
           ← Back
         </button>
         <AuditResults auditResult={auditResult} summary={summary} onBack={() => navigate(-1)} />
+        <LeadCapture auditId={id} totalMonthlySavings={auditResult.totalMonthlySavings} />
       </div>
     </main>
   );
