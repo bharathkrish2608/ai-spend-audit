@@ -1,6 +1,15 @@
-export async function sendConfirmationEmail(email, totalMonthlySavings, topRecommendation) {
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.status(405).json({ success: false, error: 'Method not allowed' });
+    return;
+  }
+  const { email, totalMonthlySavings, topRecommendation } = req.body || {};
+  if (!email) {
+    res.status(400).json({ success: false, error: 'Missing email' });
+    return;
+  }
   try {
-    const apiKey = import.meta.env.VITE_RESEND_API_KEY;
+    const apiKey = process.env.VITE_RESEND_API_KEY;
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -19,11 +28,13 @@ ${topRecommendation ? `<p>Top recommendation: ${topRecommendation}</p>` : ''}
     });
     if (!response.ok) {
       console.error('Resend email error', await response.text());
-      return null;
+      res.status(500).json({ success: false });
+      return;
     }
-    return await response.json();
+    await response.json();
+    res.status(200).json({ success: true });
   } catch (e) {
-    console.error('Email send failed silently:', e);
-    return null;
+    console.error('Email send failed', e);
+    res.status(500).json({ success: false });
   }
 }

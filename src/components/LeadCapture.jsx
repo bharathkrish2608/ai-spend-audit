@@ -17,7 +17,7 @@ export default function LeadCapture({ auditId, totalMonthlySavings }) {
     }
     try {
       await updateAuditLead(auditId, email, companyName, role);
-      await sendConfirmationEmail(email, totalMonthlySavings, null);
+      sendConfirmationEmail(email, totalMonthlySavings, null);
       setStatus("success");
     } catch (e) {
       console.error(e);
