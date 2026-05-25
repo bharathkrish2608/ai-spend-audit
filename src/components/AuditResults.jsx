@@ -10,18 +10,10 @@ export default function AuditResults({ auditResult, onBack, summary }) {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4 md:px-8 text-zinc-100 font-sans">
-      {/* Back button */}
-      <div className="mb-12">
-        <button
-          onClick={onBack}
-          className="text-zinc-500 hover:text-zinc-300 text-sm font-medium transition-colors cursor-pointer"
-        >
-          ← Back to input
-        </button>
-      </div>
+
 
       {/* Top section: Numbers as Hero */}
-      <div className="mb-16">
+      <div className="mb-20">
         {totalMonthlySavings > 0 ? (
           <div className="flex flex-col md:flex-row md:items-baseline gap-x-20 gap-y-8">
             <div>
@@ -50,20 +42,20 @@ export default function AuditResults({ auditResult, onBack, summary }) {
 
       {/* Horizontal divider */}
       {summary && (
-        <p className="text-zinc-400 text-sm italic max-w-2xl">{summary}</p>
+        <p className="text-zinc-400 text-sm italic max-w-2xl mt-8 mb-8">{summary}</p>
       )}
-      <hr className="border-t border-zinc-800 my-12" />
+      <hr className="border-t border-zinc-800 my-16" />
 
       {/* Recommendations List */}
-      <div className="mb-16">
+      <div className="mb-20">
         <h3 className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-8">
           Recommendations
         </h3>
-        <div className="space-y-8">
+        <div className="space-y-4">
           {recommendations.map((rec, index) => (
             <div
               key={index}
-              className="pb-8 border-b border-zinc-900 last:border-none last:pb-0"
+              className="border border-zinc-900 bg-zinc-900 p-5 rounded-lg"
             >
               <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
                 {/* Recommendation Detail Row */}
@@ -106,7 +98,7 @@ export default function AuditResults({ auditResult, onBack, summary }) {
       </div>
 
       {/* Horizontal divider before bottom section if there are actions */}
-      <hr className="border-t border-zinc-800 my-12" />
+      <hr className="border-t border-zinc-800 my-16" />
 
       {/* Bottom section */}
       <div className="mt-12">

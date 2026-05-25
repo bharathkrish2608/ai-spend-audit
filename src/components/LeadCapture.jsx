@@ -27,12 +27,12 @@ export default function LeadCapture({ auditId, totalMonthlySavings }) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-12 p-6 bg-zinc-900 text-zinc-100 rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto pt-16 pb-16 text-zinc-100 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-2">Get your full report</h2>
       <p className="text-sm text-zinc-400 mb-4">
         We'll email you the audit and notify you when new savings apply.
       </p>
-      <div className="space-y-4">
+      <div className="space-y-6">
         <input
           type="email"
           placeholder="Email (required)"
@@ -71,7 +71,7 @@ export default function LeadCapture({ auditId, totalMonthlySavings }) {
           Submit
         </button>
         {status === "success" && (
-          <p className="text-emerald-400 text-sm mt-2">Got it. We'll be in touch.</p>
+          <p className="text-emerald-400 text-base mt-2">Audit saved. We'll be in touch.</p>
         )}
         {status === "error" && (
           <p className="text-red-400 text-sm mt-2">Something went wrong. Try again.</p>
