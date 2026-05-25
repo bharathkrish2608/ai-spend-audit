@@ -5,6 +5,7 @@ import AuditResults from './components/AuditResults'; // still imported for pote
 import LeadCapture from './components/LeadCapture';
 import { runAudit } from './audit-engine/recommendations';
 import { saveAudit, getAudit } from './services/supabase';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { generateSummary } from './services/anthropic';
 
 function Home() {
@@ -141,6 +142,17 @@ function PublicResult() {
         >
           ← Back
         </button>
+        {auditResult && (
+          <Helmet>
+            <meta property="og:title" content={`I could save $${auditResult.totalMonthlySavings}/month on AI tools`} />
+            <meta property="og:description" content={`${auditResult.recommendations[0]?.recommendedAction || ''} ${auditResult.recommendations[0]?.reason || ''}`} />
+            <meta property="og:url" content={window.location.href} />
+            <meta property="og:type" content="website" />
+            <meta name="twitter:card" content="summary" />
+            <meta name="twitter:title" content={`I could save $${auditResult.totalMonthlySavings}/month on AI tools`} />
+            <meta name="twitter:description" content={`${auditResult.recommendations[0]?.recommendedAction || ''} ${auditResult.recommendations[0]?.reason || ''}`} />
+          </Helmet>
+        )}
         <AuditResults auditResult={auditResult} summary={summary} onBack={() => navigate(-1)} />
         <LeadCapture auditId={id} totalMonthlySavings={auditResult.totalMonthlySavings} />
       </div>
@@ -150,13 +162,15 @@ function PublicResult() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/audit" element={<Audit />} />
-        <Route path="/audit/:id" element={<PublicResult />} />
-      </Routes>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/audit" element={<Audit />} />
+          <Route path="/audit/:id" element={<PublicResult />} />
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
