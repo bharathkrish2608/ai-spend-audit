@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateAuditLead } from "../services/supabase";
+import { sendConfirmationEmail } from "../services/resend";
 
 export default function LeadCapture({ auditId, totalMonthlySavings }) {
   const [email, setEmail] = useState("");
@@ -16,6 +17,7 @@ export default function LeadCapture({ auditId, totalMonthlySavings }) {
     }
     try {
       await updateAuditLead(auditId, email, companyName, role);
+      await sendConfirmationEmail(email, totalMonthlySavings, null);
       setStatus("success");
     } catch (e) {
       console.error(e);
@@ -25,7 +27,7 @@ export default function LeadCapture({ auditId, totalMonthlySavings }) {
 
   return (
     <div className="max-w-2xl mx-auto pt-12 pb-16 px-6 bg-zinc-900 text-zinc-100 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6">Get your full report this</h2>
+      <h2 className="text-2xl font-bold mb-6">Get your full report</h2>
       <p className="text-sm text-white mb-14">
         We'll email you the audit and notify you when new savings apply.
       </p>
