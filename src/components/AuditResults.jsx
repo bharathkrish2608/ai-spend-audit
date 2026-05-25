@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function AuditResults({ auditResult, onBack }) {
+export default function AuditResults({ auditResult, onBack, summary }) {
   const {
     recommendations = [],
     totalMonthlySavings = 0,
@@ -49,6 +49,9 @@ export default function AuditResults({ auditResult, onBack }) {
       </div>
 
       {/* Horizontal divider */}
+      {summary && (
+        <p className="text-zinc-400 text-sm italic max-w-2xl">{summary}</p>
+      )}
       <hr className="border-t border-zinc-800 my-12" />
 
       {/* Recommendations List */}

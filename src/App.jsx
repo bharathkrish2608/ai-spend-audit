@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import SpendForm from './components/SpendForm';
 import AuditResults from './components/AuditResults'; // still imported for potential internal use
 import { runAudit } from './audit-engine/recommendations';
 import { saveAudit, getAudit } from './services/supabase';
+import { generateSummary } from './services/anthropic';
 
 function Home() {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ function Audit() {
     const result = runAudit(tools, teamSize, useCase);
     setAuditResult(result);
     try {
+      const summary = await generateSummary(result.recommendations, result.totalMonthlySavings, useCase, teamSize);
       const id = await saveAudit({
         tools_data: tools,
         team_size: teamSize,
@@ -49,12 +51,11 @@ function Audit() {
         recommendations: result.recommendations,
         total_monthly_savings: result.totalMonthlySavings,
         total_annual_savings: result.totalAnnualSavings,
+        ai_summary: summary,
       });
-      // Navigate to public result page with the saved audit id
-      navigate(`/audit/${id}`);
+      navigate(`/audit/${id}`, { state: { summary } });
     } catch (e) {
       console.error('Failed to save audit', e);
-      // Still navigate to a result page (could be internal) using a fallback id
       navigate('/audit/result');
     }
   }
@@ -77,6 +78,8 @@ function Audit() {
 function PublicResult() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const summary = location.state?.summary;
   const [auditResult, setAuditResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -137,7 +140,7 @@ function PublicResult() {
         >
           ← Back
         </button>
-        <AuditResults auditResult={auditResult} onBack={() => navigate(-1)} />
+        <AuditResults auditResult={auditResult} summary={summary} onBack={() => navigate(-1)} />
       </div>
     </main>
   );
