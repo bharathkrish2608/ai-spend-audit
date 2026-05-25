@@ -12,11 +12,13 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         messages: [
-          { role: 'system', content: 'Generate a concise summary for AI spend audit.' },
-          { role: 'user', content: `Recommendations: ${JSON.stringify(recommendations)}\nTotal Monthly Savings: ${totalMonthlySavings}\nUse case: ${useCase}\nTeam size: ${teamSize}` }
+          {
+            role: 'user',
+            content: `Write a ~100 word personalized paragraph summarizing an AI spend audit. Use case: ${useCase}. Team size: ${teamSize}. Total monthly savings: $${totalMonthlySavings}. Top recommendation: ${recommendations && recommendations[0] ? recommendations[0].recommendedAction : 'optimize your plans'}.`
+          }
         ]
       })
     });
