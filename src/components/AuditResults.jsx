@@ -30,9 +30,9 @@ function HeroStats({ totalMonthlySavings, totalAnnualSavings }) {
 }
 
 function Summary({ summary }) {
-  return summary && (
+  return (
     <p className="text-zinc-400 text-lg italic max-w-2xl mt-8 mb-8">
-      {summary}
+      {summary || "Generating summary..."}
     </p>
   );
 }
@@ -149,8 +149,8 @@ export default function AuditResults({ auditResult, onBack, summary }) {
       </div>
       </section>
 
-      {/* Optional summary */}
-      {Summary({ summary })}
+        {/* Optional summary */}
+        <Summary summary={summary} />
 
       {/* Divider */}
       <hr className="border-t border-zinc-800 my-16" />
