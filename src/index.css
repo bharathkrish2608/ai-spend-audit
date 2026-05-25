@@ -14,6 +14,8 @@ html, body, #root {
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
+  --brand-green: #1fb357;
+  --brand-green-hover: #1a9e4c;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
@@ -122,3 +124,24 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Hover mid-out underline effect – green underline expanding from center */
+  .hover-mid-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .hover-mid-underline::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    height: 4px; /* increased thickness by ~25% */
+    width: 100%;
+    background-color: var(--brand-green);
+    transition: transform 0.6s ease; /* slower animation */
+  }
+  .hover-mid-underline:hover::after {
+    transform: translateX(-50%) scaleX(1);
+  }

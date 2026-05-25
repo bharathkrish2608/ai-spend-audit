@@ -371,8 +371,9 @@ export default function SpendForm({ onSubmit }) {
         {/* Submit */}
         <div className="pt-4">
           <button
+
             type="submit"
-            className="w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold py-4 rounded-xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all duration-300 transform active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+            className="w-full bg-[var(--brand-green)] hover:bg-[var(--brand-green-hover)] text-zinc-950 font-semibold py-4 rounded-xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all duration-300 transform active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Analyze Spend & Find Savings</span>
             <svg
