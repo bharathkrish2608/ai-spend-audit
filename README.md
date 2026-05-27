@@ -64,3 +64,9 @@ The audit engine uses deterministic if/else logic, not an LLM. This was intentio
 
 **5. No auth**
 The assignment explicitly said no login required. Keeping it authless meant faster development and lower friction for users. Each audit gets a UUID-based public URL instead of user accounts.
+
+<img width="1894" height="885" alt="Screenshot 2026-05-27 134128" src="https://github.com/user-attachments/assets/c673a2a0-8db3-4624-aa58-4d3ae64dc687" />
+<img width="1414" height="855" alt="Screenshot 2026-05-27 134137" src="https://github.com/user-attachments/assets/cafa7650-dab9-4415-85b3-682c9ce83b33" />
+<img width="1157" height="818" alt="Screenshot 2026-05-27 134151" src="https://github.com/user-attachments/assets/179cd3e6-20df-4de4-a301-d7457608b03f" />
+<img width="908" height="576" alt="Screenshot 2026-05-27 134157" src="https://github.com/user-attachments/assets/c4f485df-09ff-461b-a8df-90d06d23cd92" />
+
