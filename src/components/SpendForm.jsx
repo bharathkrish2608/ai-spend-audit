@@ -93,11 +93,12 @@ export default function SpendForm({ onSubmit }) {
     setTools((prev) =>
       prev.map((tool, idx) => {
         if (idx === index) {
-          const seats = tool.seats || 1;
+          const seats = parseInt(tool.seats, 10) || 1;
           return {
             ...tool,
             toolId: newToolId,
             planId: newPlanId,
+            seats: seats,
             monthlySpend: seats * pricePerSeat,
           };
         }
@@ -112,10 +113,11 @@ export default function SpendForm({ onSubmit }) {
       prev.map((tool, idx) => {
         if (idx === index) {
           const pricePerSeat = PRICING[tool.toolId].plans[newPlanId].pricePerSeat;
-          const seats = tool.seats || 1;
+          const seats = parseInt(tool.seats, 10) || 1;
           return {
             ...tool,
             planId: newPlanId,
+            seats: seats,
             monthlySpend: seats * pricePerSeat,
           };
         }
@@ -126,10 +128,36 @@ export default function SpendForm({ onSubmit }) {
 
   // Handler for seats change
   const handleSeatsChange = (index, newSeats) => {
-    const seatsVal = Math.max(1, parseInt(newSeats, 10) || 1);
     setTools((prev) =>
       prev.map((tool, idx) => {
         if (idx === index) {
+          const pricePerSeat = PRICING[tool.toolId].plans[tool.planId].pricePerSeat;
+          if (newSeats === '') {
+            return {
+              ...tool,
+              seats: '',
+              monthlySpend: '',
+            };
+          }
+          const parsed = parseInt(newSeats, 10);
+          const seatsVal = isNaN(parsed) ? '' : parsed;
+          return {
+            ...tool,
+            seats: seatsVal,
+            monthlySpend: seatsVal !== '' ? seatsVal * pricePerSeat : '',
+          };
+        }
+        return tool;
+      })
+    );
+  };
+
+  const handleSeatsBlur = (index) => {
+    setTools((prev) =>
+      prev.map((tool, idx) => {
+        if (idx === index) {
+          const parsed = parseInt(tool.seats, 10);
+          const seatsVal = isNaN(parsed) || parsed < 1 ? 1 : parsed;
           const pricePerSeat = PRICING[tool.toolId].plans[tool.planId].pricePerSeat;
           return {
             ...tool,
@@ -144,10 +172,35 @@ export default function SpendForm({ onSubmit }) {
 
   // Handler for monthly spend override
   const handleMonthlySpendChange = (index, newSpend) => {
-    const spendVal = newSpend === '' ? 0 : Math.max(0, parseFloat(newSpend) || 0);
     setTools((prev) =>
       prev.map((tool, idx) => {
         if (idx === index) {
+          if (newSpend === '') {
+            return {
+              ...tool,
+              monthlySpend: '',
+            };
+          }
+          const parsed = parseFloat(newSpend);
+          const spendVal = isNaN(parsed) ? '' : Math.max(0, parsed);
+          return {
+            ...tool,
+            monthlySpend: spendVal,
+          };
+        }
+        return tool;
+      })
+    );
+  };
+
+  const handleMonthlySpendBlur = (index) => {
+    setTools((prev) =>
+      prev.map((tool, idx) => {
+        if (idx === index) {
+          const parsed = parseFloat(tool.monthlySpend);
+          const pricePerSeat = PRICING[tool.toolId].plans[tool.planId].pricePerSeat;
+          const seats = parseInt(tool.seats, 10) || 1;
+          const spendVal = isNaN(parsed) || parsed < 0 ? seats * pricePerSeat : parsed;
           return {
             ...tool,
             monthlySpend: spendVal,
@@ -177,8 +230,19 @@ export default function SpendForm({ onSubmit }) {
   // Form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    const sanitizedTools = tools.map((tool) => {
+      const seats = parseInt(tool.seats, 10) || 1;
+      const pricePerSeat = PRICING[tool.toolId].plans[tool.planId].pricePerSeat;
+      const monthlySpend = tool.monthlySpend === '' ? seats * pricePerSeat : (parseFloat(tool.monthlySpend) || 0);
+      return {
+        ...tool,
+        seats,
+        monthlySpend,
+      };
+    });
+
     onSubmit({
-      tools,
+      tools: sanitizedTools,
       teamSize: parseInt(teamSize, 10) || 1,
       useCase,
     });
@@ -205,7 +269,20 @@ export default function SpendForm({ onSubmit }) {
               id="teamSize"
               min="1"
               value={teamSize}
-              onChange={(e) => setTeamSize(Math.max(1, parseInt(e.target.value, 10) || 1))}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '') {
+                  setTeamSize('');
+                } else {
+                  const parsed = parseInt(val, 10);
+                  setTeamSize(isNaN(parsed) ? '' : parsed);
+                }
+              }}
+              onBlur={() => {
+                if (teamSize === '' || teamSize < 1) {
+                  setTeamSize(1);
+                }
+              }}
               className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
               placeholder="e.g. 10"
               required
@@ -294,6 +371,7 @@ export default function SpendForm({ onSubmit }) {
                       min="1"
                       value={tool.seats}
                       onChange={(e) => handleSeatsChange(index, e.target.value)}
+                      onBlur={() => handleSeatsBlur(index)}
                       className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 w-full"
                       required
                     />
@@ -310,6 +388,7 @@ export default function SpendForm({ onSubmit }) {
                       step="any"
                       value={tool.monthlySpend}
                       onChange={(e) => handleMonthlySpendChange(index, e.target.value)}
+                      onBlur={() => handleMonthlySpendBlur(index)}
                       className="bg-zinc-950 border border-zinc-800 text-zinc-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 w-full font-mono text-emerald-400"
                       required
                     />
