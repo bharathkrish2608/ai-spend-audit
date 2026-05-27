@@ -15,7 +15,7 @@ function Home() {
         <section className="max-w-6xl mx-auto px-6 py-24">
     <div className="max-w-2xl mx-auto flex flex-col gap-6 text-center">
     <p className="text-3xl uppercase tracking-[0.2em] text-zinc-300 mb-2 font-bold hover-mid-underline">AI Spend Optimization</p>
-    <h1 className="text-5xl md:text-7xl font-bold leading-tight hover-mid-underline">Stop overpaying for AI tools.</h1>
+    <h1 className="text-5xl md:text-7xl font-bold leading-tight hover-mid-underline text-white">Stop overpaying for AI tools.</h1>
     <p className="text-zinc-400 text-lg mt-6 leading-relaxed hover-mid-underline">
       Audit your AI stack instantly. Discover unnecessary spend,
       downgrade opportunities, and lower-cost alternatives for your team.
