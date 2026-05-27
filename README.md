@@ -1,16 +1,66 @@
-# React + Vite
+# AI Spend Audit
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A free web app that audits your team's AI tool spend and finds where you're overpaying.
 
-Currently, two official plugins are available:
+Built as a lead generation tool for [Credex](https://credex.rocks) — a platform that sells discounted AI infrastructure credits.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Live URL:** https://ai-spend-audit-lyart-nine.vercel.app
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Screenshots
 
-## Expanding the ESLint configuration
+> Add 3 screenshots here — landing page, audit form, results page
+> Or add a Loom link: [Screen recording](your-loom-link)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Quick Start
+
+### Install and run locally
+
+```bash
+git clone https://github.com/bharathkrish2608/ai-spend-audit.git
+cd ai-spend-audit
+npm install
+cp .env.example .env
+# Fill in your API keys in .env
+npm run dev
+```
+
+### Environment variables
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+VITE_ANTHROPIC_API_KEY=
+VITE_RESEND_API_KEY=
+ANTHROPIC_API_KEY=
+RESEND_API_KEY=
+
+### Deploy
+
+Push to GitHub and import to Vercel. Add environment variables in Vercel dashboard.
+
+### Run tests
+
+```bash
+npm run test
+```
+
+---
+
+## Decisions
+
+**1. No TypeScript**
+The assignment had a 7-day window. TypeScript would have added setup overhead and slowed down iteration. The audit engine is pure functions that are easy to test without types. For a production codebase I would add TypeScript from day one.
+
+**2. Supabase instead of Django**
+Started with Django but switched on day 1. Supabase gave a real Postgres database with a REST API and no backend server to maintain. The time saved went into features instead of configuration.
+
+**3. Vercel serverless functions for API proxying**
+Anthropic and Resend block direct browser calls due to CORS. Instead of building a separate backend server, I used Vercel's built-in serverless functions in the api/ folder. Zero additional infrastructure.
+
+**4. Hardcoded audit rules instead of AI**
+The audit engine uses deterministic if/else logic, not an LLM. This was intentional — the recommendations need to be financially defensible and explainable. An LLM generating savings recommendations would be unpredictable and hard to verify. AI is only used for the summary paragraph where exact accuracy is less critical.
+
+**5. No auth**
+The assignment explicitly said no login required. Keeping it authless meant faster development and lower friction for users. Each audit gets a UUID-based public URL instead of user accounts.
