@@ -91,8 +91,8 @@ export function checkCheaperSameVendor(toolId, planId, seats) {
 
       if (isIndividualOnly) continue;
     } else {
-      // For exactly 2 seats, avoid free single-user tiers
-      if (numSeats === 2 && plan.pricePerSeat === 0) continue;
+      // Avoid free single-user tiers for paid users
+      if (plan.pricePerSeat === 0) continue;
     }
 
     if (plan.pricePerSeat < lowestPrice) {
